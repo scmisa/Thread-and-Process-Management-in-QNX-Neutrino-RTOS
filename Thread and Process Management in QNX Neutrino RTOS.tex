@@ -174,6 +174,31 @@ The microkernel architecture is designed to be modular and extensible, allowing 
         \label{fig:monolithic}
     \end{minipage}
 \end{figure}
+\FloatBarrier
+
+\section{POSIX Standard}
+\label{sec:posix-standard}
+The Portable Operating System Interface (POSIX) is a set of standards that define the application programming interface (API), along with command line shells and utility interfaces, for software compatibility with variants of Unix and other operating systems.
+The POSIX standard is designed to provide a consistent and portable interface for developing applications that can run on different operating systems.
+The POSIX standard provides a set of APIs and standards for developing portable applications that can run on different operating systems.
+
+\subsection{QNX Neutrino RTOS and POSIX}
+\label{sec:qnx-neutrino-posix}
+The QNX Neutrino RTOS is designed to be compatible with the POSIX standard, which allows developers to use standard APIs and libraries when developing applications.
+The QNX Neutrino RTOS provides a wide range of tools and libraries for developing, debugging, and deploying applications, making it easy to develop real-time applications.
+The QNX Neutrino RTOS provides a POSIX-compliant API, which allows developers to use standard POSIX functions and libraries when developing applications.
+The QNX Neutrino RTOS also provides a set of extensions to the POSIX standard, which provide additional functionality and features for real-time applications.
+The QNX Neutrino RTOS provides a wide range of tools and libraries for developing, debugging, and deploying applications, making it easy to develop real-time applications.
+
+\subsection{QNX Neutrino RTOS vs Other RTOS (POSIX)}
+\label{sec:qnx-neutrino-vs-other-rtos}
+The QNX Neutrino RTOS is a real-time operating system that is designed to meet the timing constraints of real-time applications.
+It is widely used in embedded systems, automotive applications, and other mission-critical environments.
+The QNX Neutrino RTOS is designed to be modular and scalable, allowing developers to customize the system to meet the specific needs of their applications.
+The QNX Neutrino RTOS is based on the POSIX standard, which provides a set of APIs and standards for developing portable applications.
+The POSIX standard provides a set of APIs and standards for developing portable applications that can run on different operating systems.
+The QNX Neutrino RTOS is designed to be compatible with the POSIX standard, which allows developers to use standard APIs and libraries when developing applications.
+The QNX Neutrino RTOS provides a wide range of tools and libraries for developing, debugging, and deploying applications, making it easy to develop real-time applications.
 
 \section{Overview of QNX Neutrino Architecture}
 \label{sec:qnx-neutrino-architecture}
@@ -262,6 +287,79 @@ There are several other real-time operating systems (RTOS) available in the mark
 \label{sec:future-qnx}
 The future of QNX Neutrino RTOS looks promising, as it continues to evolve and adapt to the changing needs of real-time applications.
 The QNX Neutrino RTOS is expected to continue to be widely used in embedded systems, automotive applications, and other mission-critical environments.
+
+\section{Example Code for Thread Creation and Termination (QNX-Specific)}
+\label{sec:example-code-threadcreate}
+\begin{verbatim}
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/neutrino.h>
+
+void* thread_function(void* arg) {
+    printf("Thread %d is running...\n", (int)arg);
+    sleep(1);
+    printf("Thread %d is exiting...\n", (int)arg);
+    return NULL;
+}
+
+int main() {
+    int thread_id;
+    for (int i = 0; i < 5; i++) {
+        thread_id = ThreadCreate(NULL, thread_function, (void*)i);
+        if (thread_id == -1) {
+            perror("ThreadCreate failed");
+            return EXIT_FAILURE;
+        }
+    }
+    printf("All threads created successfully.\n");
+    sleep(2); // Allow threads to finish
+    return EXIT_SUCCESS;
+}
+\end{verbatim}
+The above code demonstrates how to create threads in QNX Neutrino using the \texttt{ThreadCreate()} function.
+Each thread executes the \texttt{thread\_function()}, which prints a message, sleeps for 1 second, and then exits.
+
+\section{Example Code for Thread Synchronization (QNX-Specific)}
+\label{sec:example-code-threadcreate-synchronization}
+\begin{verbatim}
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/neutrino.h>
+#include <sys/syspage.h>
+
+int shared_data = 0;
+pthread_mutex_t mutex;
+
+void* thread_function(void* arg) {
+    pthread_mutex_lock(&mutex);
+    shared_data++;
+    printf("Thread %d incremented shared data to %d\n", (int)arg, shared_data);
+    pthread_mutex_unlock(&mutex);
+    return NULL;
+}
+
+int main() {
+    int thread_ids[5];
+    pthread_mutex_init(&mutex, NULL);
+
+    for (int i = 0; i < 5; i++) {
+        thread_ids[i] = ThreadCreate(NULL, thread_function, (void*)i);
+        if (thread_ids[i] == -1) {
+            perror("ThreadCreate failed");
+            return EXIT_FAILURE;
+        }
+    }
+
+    sleep(2); // Allow threads to finish
+    pthread_mutex_destroy(&mutex);
+    printf("Final shared data value: %d\n", shared_data);
+    return EXIT_SUCCESS;
+}
+\end{verbatim}
+The above code demonstrates how to use \texttt{ThreadCreate()} in QNX Neutrino along with \texttt{pthread\_mutex\_lock()} and \texttt{pthread\_mutex\_unlock()} for thread synchronization.
+Each thread increments the shared data variable while ensuring mutual exclusion using a mutex.
 
 \section{Conclusion}
 \label{sec:conclusion}
