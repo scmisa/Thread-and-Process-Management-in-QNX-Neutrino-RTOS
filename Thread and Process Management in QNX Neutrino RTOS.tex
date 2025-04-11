@@ -13,10 +13,13 @@
 \usepackage{cleveref}       % smart cross-referencing
 \usepackage{lipsum}         % Can be removed after putting your text content
 \usepackage{tabularx} % Add this to your preamble
-
+\usepackage{placeins}
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage{doi}
+
+\raggedbottom % Allow uneven spacing
+
 
 \title{Thread and Process Management in QNX Neutrino RTOS}
 
@@ -97,7 +100,7 @@ Real-time operating systems (RTOS) are designed to meet the timing constraints o
 RTOSs are typically used in embedded systems, automotive applications, and other mission-critical environments where timing is critical.
 GPOSs are typically used in desktop and server environments where timing is not as critical.
 
-\begin{table}[h!]
+\begin{table}[!ht]
     \centering
     \small % Reduce font size
     \begin{tabularx}{\textwidth}{@{}Xl@{}}
@@ -115,30 +118,34 @@ GPOSs are typically used in desktop and server environments where timing is not 
 \end{table}
 
 \subsection{QNX SDP 8.0}
+\label{sec:qnx-sdp}
 The QNX Software Development Platform (SDP) 8.0 is the latest version of the QNX Neutrino RTOS, which provides a comprehensive development environment for building real-time applications.
 The SDP 8.0 includes a wide range of tools and libraries for developing, debugging, and deploying applications on QNX Neutrino.
 The SDP 8.0 includes a new set of development tools, including the QNX Momentics IDE, which provides a powerful and flexible environment for developing real-time applications.
 
 
 \subsection{QNX Neutrino}
+\label{sec:qnx-neutrino}
 Although QNX SDP 7.0 was the classical distribution focused exclusively on Neutrino RTOS, the more recent SDP 8.0 (released in 2023) introduces enhanced development tools,
 still incorporates Neutrino's real-time capabilities with improved development tooling and broader system integration.
 The QNX Neutrino RTOS is a microkernel-based operating system that provides a high degree of concurrency and real-time performance.
 It is widely used in embedded systems, automotive applications, and other mission-critical environments.
 
 \subsection{QNX Momentics}
+\label{sec:qnx-momentics}
 The QNX Momentics IDE is a powerful development environment that provides a wide range of tools for developing, debugging, and deploying applications on QNX Neutrino.
 The IDE includes a code editor, a debugger, and a profiler, as well as tools for managing projects and building applications.
 The QNX Momentics IDE is designed to be easy to use and provides a wide range of features for developing real-time applications.
  
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{graph2.png} % Replace 'image.png' with your image file name
+    \includegraphics[width=0.8\textwidth]{graph2.png} % Replace 'image.png' with your image file name
     \caption{QNX Momentics IDE Window \citep{qnx_m} }
     \label{fig:qnx-momentics window}
 \end{figure}
 
 \section{Monolithic vs Microkernel Architecture}
+\label{sec:monolithic-vs-microkernel}
 
 For operating systems, the architecture can be broadly classified into two categories: monolithic and microkernel.
 Monolithic operating systems have a single large kernel that manages all system resources and services, while microkernel operating systems have a small kernel that provides only the most essential services, with other services running in user space.
@@ -151,7 +158,6 @@ However, microkernels can provide better fault isolation and recovery, as servic
 Monolithic kernels are typically used in general-purpose operating systems, such as Linux and Windows, while microkernels are used in real-time operating systems (RTOS), such as QNX Neutrino and VxWorks.
 The microkernel architecture is designed to be modular and extensible, allowing developers to add or remove services as needed.
 
-\label{sec:monolithic-vs-microkernel}
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -175,10 +181,14 @@ The QNX Neutrino RTOS is designed to be modular and scalable, allowing developer
 The architecture of QNX Neutrino is based on a microkernel design, which provides a small and efficient kernel that manages the most essential system services, while other services run in user space.
 The microkernel architecture of QNX Neutrino allows for better fault isolation and recovery, as services running in user space can be restarted or replaced without affecting the kernel or other services.
 \section{Thread and Process Management}
+\label{sec:thread-and-process-management}
+\FloatBarrier
 RTOS systems are processing diffrently that general-purpose operating systems (GPOS).
 Threads and processes are the basic units of execution in both RTOS and GPOS.
 Threads are lightweight processes that share the same memory space and resources, while processes are independent units of execution that have their own memory space and resources. \cite{POSIX}
+
 \subsection{Thread Scheduling and Real-Time Constraints}
+\label{sec:thread-scheduling}
 In General-Purpose Operating Systems (GPOS), the scheduling of threads is typically based on a time-sharing model, where each thread is given a time slice to execute before being preempted by the scheduler.
 Most GPOS use preemptive multitasking:
 \begin{itemize}
@@ -194,8 +204,10 @@ Example:
 \end{itemize}
 In contrast, in Real-Time Operating Systems (RTOS), the scheduling of threads is typically based on a priority-based model, 
 where each thread is assigned a priority level and the scheduler selects the highest-priority thread to execute next.
-This allows RTOSs to meet the timing constraints of real-time applications, where certain tasks must be completed within a specific time frame.
+This allows RTOSs to meet the timing constraints of real-time applications, where certain tasks must be completed within a specific time frame. \cite{ThreadScheduling}
+
 \subsection{Thread Priorities}
+\label{sec:thread-priorities}
 Thread priorities are used to determine the order in which threads are scheduled for execution.
 In QNX Neutrino, thread priorities are represented by an integer value, with higher values indicating higher priority.
 The priority of a thread can be set when the thread is created or changed at any time during its execution.
@@ -208,22 +220,60 @@ The QNX Neutrino RTOS supports a range of scheduling policies, including:
 	\item \textbf{Best Effort} - This policy is used for non-real-time tasks that do not have strict timing constraints.
 	\item \textbf{Time-Slicing} - This policy is used for time-sharing tasks that have a fixed time slice for execution.
 	\item \textbf{Priority Inheritance} - This policy is used to prevent priority inversion, where a lower-priority thread holds a resource needed by a higher-priority thread.
-\end{itemize}
+\end{itemize} \cite{ThreadPriority}
+
 \subsection{Thread Creation and Termination}
+\label{sec:thread-creation}
 In QNX Neutrino, threads are created using the \texttt{ThreadCreate()} function, which takes a function pointer and a set of attributes as arguments.
 The function creates a new thread and assigns it a unique thread ID.
 The thread can then be terminated using the \texttt{ThreadDestroy()} function, which allows the thread to clean up its resources before exiting.
 In GPOS, threads are typically created using the \texttt{pthread\_create()} function, which takes a function pointer and a set of attributes as arguments.
 The function creates a new thread and assigns it a unique thread ID.
-The thread can then be terminated using the \texttt{pthread\_exit()} function, which allows the thread to clean up its resources before exiting.
+The thread can then be terminated using the \texttt{pthread\_exit()} function, which allows the thread to clean up its resources before exiting.\cite{ThreadsAndProcesses}
 
 \subsection{Thread Synchronization Mechanisms}
+\label{sec:thread-synchronization}
 RTOS and GPOS systems use different mechanisms for thread synchronization.
 In GPOS, thread synchronization is typically achieved using mutexes, semaphores, and condition variables.
-In RTOS, thread synchronization is typically achieved using message queues, event flags, and other real-time synchronization mechanisms.
-\section{Conclusion}
+In RTOS, thread synchronization is typically achieved using message queues, event flags, and other real-time synchronization mechanisms.\cite{ThreadSynchronization}
 
-\bibliographystyle{abbrvnat}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
+\section{Uses of Real-Time Operating Systems}
+\label{sec:uses-of-rtos}
+Real-time operating systems (RTOS) are used in a wide range of applications, including:
+\begin{itemize}
+    \item  Embedded systems - RTOSs are commonly used in embedded systems, such as microcontrollers and digital signal processors (DSPs), where real-time performance is critical.
+    \item  Automotive applications - RTOSs are used in automotive applications, such as engine control units (ECUs) and advanced driver assistance systems (ADAS), where real-time performance is critical for safety and reliability.
+    \item  Aerospace and defense - RTOSs are used in aerospace and defense applications, such as avionics systems and missile guidance systems, where real-time performance is critical for safety and reliability.
+    \item  Industrial automation - RTOSs are used in industrial automation applications, such as robotics and process control, where real-time performance is critical for safety and reliability.
+    \item  Telecommunications - RTOSs are used in telecommunications applications, such as base stations and network routers, where real-time performance is critical for data transmission and processing.
+\end{itemize}
+
+\section{Other Real-Time Operating Systems}
+\label{sec:other-rtos}
+There are several other real-time operating systems (RTOS) available in the market, each with its own features and capabilities. Some of the most popular RTOSs include:
+\begin{itemize}
+    \item  FreeRTOS - A popular open-source RTOS that is widely used in embedded systems and IoT applications.
+    \item  VxWorks - A commercial RTOS that is widely used in aerospace, defense, and industrial automation applications.
+    \item  RTEMS - An open-source RTOS that is widely used in aerospace and defense applications.
+    \item  Micrium - A commercial RTOS that is widely used in embedded systems and IoT applications.
+    \item  Zephyr - An open-source RTOS that is widely used in IoT applications.
+\end{itemize}
+\section{Future of QNX Neutrino RTOS}
+\label{sec:future-qnx}
+The future of QNX Neutrino RTOS looks promising, as it continues to evolve and adapt to the changing needs of real-time applications.
+The QNX Neutrino RTOS is expected to continue to be widely used in embedded systems, automotive applications, and other mission-critical environments.
+
+\section{Conclusion}
+\label{sec:conclusion}
+In conclusion, the QNX Neutrino RTOS provides a powerful and flexible framework for managing threads and processes in real-time applications.
+The microkernel architecture of QNX Neutrino allows for better fault isolation and recovery, as services running in user space can be restarted or replaced without affecting the kernel or other services.
+The thread and process management mechanisms of QNX Neutrino provide a high degree of concurrency and real-time performance, making it suitable for embedded systems, automotive applications, and other mission-critical environments.
+The QNX Neutrino RTOS provides a wide range of tools and libraries for developing, debugging, and deploying applications, making it easy to develop real-time applications.
+The QNX Momentics IDE provides a powerful and flexible environment for developing real-time applications, with a wide range of features for managing projects and building applications.
+The QNX Neutrino RTOS is a powerful and flexible operating system that provides a high degree of concurrency and real-time performance.
+The QNX Neutrino RTOS is widely used in embedded systems, automotive applications, and other mission-critical environments, making it a popular choice for developers of real-time applications.
+
+\bibliographystyle{unsrt}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
 \bibliography{references}  %%% Uncomment this line and comment out the ``thebibliography'' section below to use the external .bib file (using bibtex) .
 
 \end{document}
