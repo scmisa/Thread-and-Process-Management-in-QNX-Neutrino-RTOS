@@ -4,7 +4,7 @@
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+\usepackage[hidelinks]{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
@@ -17,6 +17,7 @@
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage{doi}
+\usepackage{changepage}
 
 \raggedbottom % Allow uneven spacing
 
@@ -26,7 +27,7 @@
 % Here you can change the date presented in the paper title
 %\date{September 9, 1985}
 % Or remove it
-%\date{}
+\date{}
 
 \newif\ifuniqueAffiliation
 % Comment to use multiple affiliations variant of author block 
@@ -34,10 +35,9 @@
 
 \ifuniqueAffiliation % Standard variant of author block
 \author{ 
-	\href{https://orcid.org/0009-0000-3709-0802}{\includegraphics[scale=0.06]{orcid.pdf}\hspace{1mm}Jakub Oleszczuk} \\
+	\href{https://orcid.org/0009-0000-3709-0802}{Jakub Oleszczuk} \\ % \includegraphics[scale=0.06]{orcid.pdf}\hspace{1mm}
 	Faculty of Transport, Electrical Engineering and Computer Science\\
-	University of Radom\\
-	Radom, Poland \\
+	University of Radom, Radom, Poland \\
 	\texttt{118060@student.uthrad.pl} \\
 }
 \else
@@ -54,8 +54,8 @@
 \fi
 
 % Uncomment to override  the `A preprint' in the header
-\renewcommand{\headeright}{Technical Report}
-\renewcommand{\undertitle}{Technical Report}
+\renewcommand{\headeright}{}
+\renewcommand{\undertitle}{}
 \renewcommand{\shorttitle}{Thread and Process Management in QNX Neutrino RTOS}
 
 %%% Add PDF metadata to help others organize their library
@@ -73,18 +73,16 @@ pdfkeywords={QNX Neutrino, RTOS, Thread Management, Process Management},
 
 \begin{abstract}
 	\label{sec:abstract}
-
 	This paper presents the thread and process management mechanism of the QNX Neutrino real-time operating system.
 	The aim is to highlight how QNX, as microkernel-based RTOS, handles concurrency and determinism in time-critical applications.
 	The paper discusses the internal structure of threads and processes, their interaction, and real-time scheduling policies such as $SCHED\_FIFO$
 	and sporadic context of avoiding priority inversion and ensuring system reliability. The presented features make QNX Neutrino suitable for
 	embedded and mission-critical systems.
-
 \end{abstract}
 
 
 % keywords can be removed
-\keywords{QNX Neutrino \and RTOS \and Thread Management \and Process Management}
+\keywords{QNX Neutrino, RTOS, Thread Management, Process Management}
 
 
 \section{Introduction}
