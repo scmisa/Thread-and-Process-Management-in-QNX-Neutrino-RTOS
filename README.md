@@ -1,6 +1,6 @@
 # Thread and Process Management in QNX Neutrino RTOS
 
-This repository contains an academic essay on the topic of thread and process management in the QNX Neutrino Real-Time Operating System (RTOS). The essay explores the architecture, scheduling mechanisms, and advantages of QNX Neutrino, with a focus on its microkernel design and real-time capabilities.
+This repository contains an academic essay on the topic of thread and process management in the QNX Neutrino Real-Time Operating System (RTOS). The essay explores the architecture, scheduling mechanisms, and advantages of QNX Neutrino, with a focus on its microkernel design and real-time capabilities. This essay was written to pass a subject on University (Subject name - Operating Systems)
 
 ## Contents
 
